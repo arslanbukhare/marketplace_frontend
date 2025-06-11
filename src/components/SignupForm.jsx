@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { FaEye, FaEyeSlash } from 'react-icons/fa'; // 👁️ Icons for password toggle
-import { UserIcon, BuildingOffice2Icon } from '@heroicons/react/24/solid'; // Import icons (Tailwind Heroicons)
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { UserIcon, BuildingOffice2Icon } from '@heroicons/react/24/solid';
 
 export default function SignupForm() {
   const [form, setForm] = useState({
@@ -101,11 +101,11 @@ export default function SignupForm() {
         </p>
         <button
           onClick={handleResend}
-          className="bg-blue-600 text-white px-6 py-2 rounded-xl font-medium hover:bg-blue-700"
+          className="btn btn-primary"
         >
           Resend Verification Email
         </button>
-        {message && <p className="text-sm text-green-600 mt-2">{message}</p>}
+        {message && <p className="text-sm text-success mt-2">{message}</p>}
       </div>
     );
   }
@@ -113,95 +113,80 @@ export default function SignupForm() {
   const passwordStrength = getPasswordStrength(form.password);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 relative">
+    <form onSubmit={handleSubmit} className="space-y-4 relative bg-base-100 p-6 rounded-xl shadow">
       {loading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-10 rounded-xl">
-          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="absolute inset-0 flex items-center justify-center bg-base-100 bg-opacity-75 z-10 rounded-xl">
+          <span className="loading loading-spinner loading-lg text-primary"></span>
         </div>
       )}
 
-     {/* Account Type Selection */}
+      {/* Account Type */}
       <div>
-        <label className="block text-sm mb-2 font-medium text-gray-700">Account Type</label>
-        <div className="flex space-x-4">
-          {/* Individual Option */}
+        <label className="block text-sm font-medium mb-2">Account Type</label>
+        <div className="flex gap-4">
           <button
             type="button"
             onClick={() => setForm({ ...form, role: 'individual' })}
-            className={`flex-1 flex flex-col items-center justify-center border rounded-xl px-4 py-3 transition-all ${
-              form.role === 'individual'
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'bg-white text-gray-700 border-gray-300 hover:border-blue-500'
-            }`}
+            className={`btn flex-1 ${form.role === 'individual' ? 'btn-primary text-white' : 'btn-outline'}`}
           >
-            <UserIcon className="h-6 w-6 mb-1" />
-            <span className="text-sm font-semibold">Individual</span>
+            <UserIcon className="h-5 w-5 mr-2" />
+            Individual
           </button>
-
-          {/* Company Option */}
           <button
             type="button"
             onClick={() => setForm({ ...form, role: 'company' })}
-            className={`flex-1 flex flex-col items-center justify-center border rounded-xl px-4 py-3 transition-all ${
-              form.role === 'company'
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'bg-white text-gray-700 border-gray-300 hover:border-blue-500'
-            }`}
+            className={`btn flex-1 ${form.role === 'company' ? 'btn-primary text-white' : 'btn-outline'}`}
           >
-            <BuildingOffice2Icon className="h-6 w-6 mb-1" />
-            <span className="text-sm font-semibold">Company</span>
+            <BuildingOffice2Icon className="h-5 w-5 mr-2" />
+            Company
           </button>
         </div>
       </div>
 
-      {/* Name Fields */}
+      {/* Company or Individual Name */}
       {form.role === 'company' ? (
-        <div>
-          <label htmlFor="company_name" className="block text-sm mb-1">Company Name</label>
+        <div className="form-control">
+          <label className="label">Company Name</label>
           <input
-            id="company_name"
             type="text"
             name="company_name"
             value={form.company_name}
             onChange={handleChange}
-            className="w-full border rounded-xl px-4 py-2"
+            className="input input-bordered w-full"
             required
           />
         </div>
       ) : (
-        <div>
-          <label htmlFor="first_name" className="block text-sm mb-1">First Name</label>
+        <div className="form-control">
+          <label className="label">First Name</label>
           <input
-            id="first_name"
             type="text"
             name="first_name"
             value={form.first_name}
             onChange={handleChange}
-            className="w-full border rounded-xl px-4 py-2"
+            className="input input-bordered w-full"
             required
           />
         </div>
       )}
 
       {/* Email */}
-      <div>
-        <label htmlFor="email" className="block text-sm mb-1">Email</label>
+      <div className="form-control">
+        <label className="label">Email</label>
         <input
-          id="email"
           type="email"
           name="email"
           value={form.email}
           onChange={handleChange}
-          className="w-full border rounded-xl px-4 py-2"
+          className="input input-bordered w-full"
           required
         />
       </div>
 
       {/* Phone */}
-      <div>
-        <label htmlFor="phone" className="block text-sm mb-1">Phone</label>
+      <div className="form-control">
+        <label className="label">Phone</label>
         <input
-          id="phone"
           type="tel"
           name="phone"
           value={form.phone}
@@ -209,28 +194,26 @@ export default function SignupForm() {
             const cleaned = e.target.value.replace(/[^\d+]/g, '');
             setForm({ ...form, phone: cleaned });
           }}
-          className="w-full border rounded-xl px-4 py-2"
+          className="input input-bordered w-full"
           required
         />
       </div>
 
-
       {/* Password */}
-      <div>
-        <label htmlFor="password" className="block text-sm mb-1">Password</label>
+      <div className="form-control">
+        <label className="label">Password</label>
         <div className="relative">
           <input
-            id="password"
             type={showPassword ? 'text' : 'password'}
             name="password"
             value={form.password}
             onChange={handleChange}
-            className="w-full border rounded-xl px-4 py-2 pr-10"
+            className="input input-bordered w-full pr-10"
             required
           />
           <span
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+            className="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer text-gray-500"
           >
             {showPassword ? <FaEyeSlash /> : <FaEye />}
           </span>
@@ -238,15 +221,13 @@ export default function SignupForm() {
         {form.password && (
           <p className="text-xs mt-1">
             Strength:{" "}
-            <span
-              className={
-                passwordStrength === 'Strong'
-                  ? 'text-green-600'
-                  : passwordStrength === 'Medium'
-                  ? 'text-yellow-600'
-                  : 'text-red-600'
-              }
-            >
+            <span className={
+              passwordStrength === 'Strong'
+                ? 'text-success'
+                : passwordStrength === 'Medium'
+                ? 'text-warning'
+                : 'text-error'
+            }>
               {passwordStrength}
             </span>
           </p>
@@ -254,21 +235,20 @@ export default function SignupForm() {
       </div>
 
       {/* Confirm Password */}
-      <div>
-        <label htmlFor="password_confirmation" className="block text-sm mb-1">Confirm Password</label>
+      <div className="form-control">
+        <label className="label">Confirm Password</label>
         <div className="relative">
           <input
-            id="password_confirmation"
             type={showPasswordConfirmation ? 'text' : 'password'}
             name="password_confirmation"
             value={form.password_confirmation}
             onChange={handleChange}
-            className="w-full border rounded-xl px-4 py-2 pr-10"
+            className="input input-bordered w-full pr-10"
             required
           />
           <span
             onClick={() => setShowPasswordConfirmation(!showPasswordConfirmation)}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+            className="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer text-gray-500"
           >
             {showPasswordConfirmation ? <FaEyeSlash /> : <FaEye />}
           </span>
@@ -276,16 +256,9 @@ export default function SignupForm() {
       </div>
 
       {/* Submit Button */}
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded-xl font-semibold hover:bg-blue-700 flex justify-center items-center"
-        disabled={loading}
-      >
+      <button type="submit" className="btn btn-primary w-full" disabled={loading}>
         {loading ? (
-          <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-          </svg>
+          <span className="loading loading-spinner"></span>
         ) : (
           'Sign Up'
         )}
@@ -293,7 +266,7 @@ export default function SignupForm() {
 
       {/* Message */}
       {message && (
-        <div className={`text-sm mt-2 text-center ${message.toLowerCase().includes('success') ? 'text-green-600' : 'text-red-600'}`}>
+        <div className={`text-sm text-center mt-2 ${message.toLowerCase().includes('success') ? 'text-success' : 'text-error'}`}>
           {message}
         </div>
       )}

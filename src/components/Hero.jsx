@@ -1,27 +1,38 @@
 export default function Hero() {
   return (
-    <section className="bg-gray-100 py-16">
-      <div className="container mx-auto px-4 text-center">
-        <h1 className="text-4xl font-bold mb-4">Find Everything You Need</h1>
-        <p className="mb-6 text-gray-600">Buy, sell, or rent anything near you.</p>
+    <section className="hero min-h-[70vh] bg-base-200">
+      <div className="hero-content text-center flex flex-col max-w-2xl w-full">
+        {/* Heading */}
+        <h1 className="text-5xl font-bold text-primary mb-4">
+          Find Everything You Need
+        </h1>
 
-        <div className="max-w-2xl mx-auto mb-6">
+        {/* Subheading */}
+        <p className="text-lg text-base-content mb-6">
+          Buy, sell, or rent anything near you.
+        </p>
+
+        {/* Search Box */}
+        <div className="form-control w-full mb-6">
           <input
             type="text"
             placeholder="Search for ads..."
-            className="w-full p-4 border rounded"
+            className="input input-bordered input-lg w-full"
           />
         </div>
 
+        {/* Category Buttons */}
         <div className="flex flex-wrap justify-center gap-3">
-          {['Cars', 'Real Estate', 'Jobs', 'Electronics', 'Services'].map(cat => (
-            <button key={cat} className="border text-white px-4 py-2 rounded shadow hover:bg-gray-200">
+          {['Cars', 'Real Estate', 'Jobs', 'Electronics', 'Services'].map((cat) => (
+            <button
+              key={cat}
+              className="btn btn-primary btn-outline"
+            >
               {cat}
             </button>
-            
           ))}
         </div>
       </div>
     </section>
-  )
+  );
 }

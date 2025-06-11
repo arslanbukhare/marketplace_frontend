@@ -1,28 +1,2 @@
 @import "tailwindcss";
-
-:theme {
-  /* Brand Colors */
-  --color-primary: #2563eb;     /* Blue 600 */
-  --color-primary-hover: #1d4ed8; /* Blue 700 */
-
-  --color-secondary: #10b981;   /* Emerald 500 */
-  --color-secondary-hover: #059669; /* Emerald 600 */
-
-  /* UI Backgrounds */
-  --color-bg: #f9fafb;          /* Gray 50 */
-  --color-bg-alt: #f3f4f6;      /* Gray 100 */
-
-  /* Borders */
-  --color-border: #d1d5db;      /* Gray 300 */
-
-  /* Text */
-  --color-text: #1f2937;        /* Gray 800 */
-  --color-muted: #6b7280;       /* Gray 500 */
-  --color-link: #2563eb;
-
-  /* Alerts & States */
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
-}
-
+@plugin "daisyui";

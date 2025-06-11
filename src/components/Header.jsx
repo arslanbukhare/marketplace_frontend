@@ -6,17 +6,23 @@ export default function Header() {
 
   return (
     <>
-      <header className="bg-white shadow p-4 flex items-center justify-between">
-        <div className="text-xl font-bold">AdMarket</div>
+      <header className="navbar bg-base-100 shadow">
+        <div className="container mx-auto px-4 flex justify-between items-center w-full">
+          {/* Brand */}
+          <div className="text-xl font-bold text-primary">
+            AdMarket
+          </div>
 
-        <nav className="space-x-4">
-          <button
-            onClick={() => setIsAuthOpen(true)}
-            className="text-white font-medium"
-          >
-            Login / Sign Up
-          </button>
-        </nav>
+          {/* Navigation */}
+          <nav className="space-x-2">
+            <button
+              onClick={() => setIsAuthOpen(true)}
+              className="btn btn-primary"
+            >
+              Login / Sign Up
+            </button>
+          </nav>
+        </div>
       </header>
 
       {/* Auth Modal */}

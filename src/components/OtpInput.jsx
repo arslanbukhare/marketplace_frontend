@@ -76,8 +76,8 @@ export default function OtpInput({ login, onSubmit }) {
   };
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <p className="text-gray-700 text-sm text-center">
+    <div className="flex flex-col items-center gap-5">
+      <p className="text-base text-center text-gray-700">
         Enter the 6-digit code sent to <strong>{login}</strong>
       </p>
 
@@ -91,14 +91,16 @@ export default function OtpInput({ login, onSubmit }) {
             value={digit}
             onChange={(e) => handleChange(index, e.target.value)}
             onKeyDown={(e) => handleKeyDown(index, e)}
-            className="w-12 h-12 text-center text-lg border border-gray-300 rounded-xl focus:outline-none focus:ring"
+            className="input input-bordered w-12 h-12 text-center text-lg"
           />
         ))}
       </div>
 
       <button
         onClick={handleResend}
-        className={`text-sm font-medium ${resendEnabled ? 'text-blue-600 hover:underline' : 'text-gray-400 cursor-not-allowed'}`}
+        className={`btn btn-link p-0 text-sm ${
+          resendEnabled ? 'text-primary' : 'text-gray-400 pointer-events-none'
+        }`}
         disabled={!resendEnabled}
       >
         {resendEnabled ? 'Resend OTP' : `Resend OTP in ${timer}s`}
