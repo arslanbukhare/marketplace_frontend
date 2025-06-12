@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -9,10 +10,11 @@ export default function AuthModal({ isOpen, onClose }) {
   const [view, setView] = useState('login'); // 'login' | 'signup' | 'otp'
   const [loginMethod, setLoginMethod] = useState('email');
   const [loginValue, setLoginValue] = useState('');
+  const navigate = useNavigate();
 
   if (!isOpen) return null;
 
-  // const handleLoginSubmit = async ({ login, password }) => {
+  
   //   try {
   //     const res = await axios.post(
   //       'http://127.0.0.1:8000/api/login/request-otp',
@@ -94,19 +96,59 @@ const handleLoginSubmit = async ({ login, password }) => {
     }
   };
 
+  // const handleOtpSubmit = async (otp) => {
+  //   try {
+  //     const res = await axios.post(
+  //       'http://127.0.0.1:8000/api/login/verify-otp',
+  //       { login: loginValue, otp },
+  //       { withCredentials: true }
+  //     );
+  //     toast.success('Login successful!');
+  //     const { user, token } = response.data;
+
+  //     localStorage.setItem("user", JSON.stringify(user));
+  //     localStorage.setItem("token", token);
+
+  //     // Redirect to dashboard based on role
+  //     if (user.role === "company") {
+  //       navigate("/dashboard/company");
+  //     } else if (user.role === "individual") {
+  //       navigate("/dashboard/individual");
+  //     }
+
+  //     onClose();
+  //   } catch (error) {
+  //     toast.error(error.response?.data?.message || 'Invalid OTP. Try again.');
+  //   }
+  // };
+
   const handleOtpSubmit = async (otp) => {
-    try {
-      const res = await axios.post(
-        'http://127.0.0.1:8000/api/login/verify-otp',
-        { login: loginValue, otp },
-        { withCredentials: true }
-      );
-      toast.success('Login successful!');
-      onClose();
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Invalid OTP. Try again.');
-    }
-  };
+      try {
+        const res = await axios.post(
+          'http://127.0.0.1:8000/api/login/verify-otp',
+          { login: loginValue, otp },
+          { withCredentials: true }
+        );
+
+        toast.success('Login successful!');
+        const { user, token } = res.data; // ✅ fix here
+
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("token", token);
+
+        // Redirect to dashboard based on role
+        if (user.role === "company") {
+          navigate("/dashboard/company");
+        } else if (user.role === "individual") {
+          navigate("/dashboard/individual");
+        }
+
+        onClose(); // ✅ optional - can also be called before navigate()
+      } catch (error) {
+        toast.error(error.response?.data?.message || 'Invalid OTP. Try again.');
+      }
+    };
+
 
   return (
     <div className="fixed inset-0 bg-base-300 bg-opacity-60 flex items-center justify-center z-50">
