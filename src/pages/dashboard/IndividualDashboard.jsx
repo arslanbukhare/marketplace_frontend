@@ -1,9 +1,9 @@
-import IndividualHeader from "../../components/headers/IndividualHeader";
+import Header from '../../components/shared/Header';
 
 export default function IndividualDashboard() {
   return (
     <div>
-      <IndividualHeader />
+      <Header />
       <div className="p-4">Welcome to Individual Dashboard!</div>
     </div>
   );

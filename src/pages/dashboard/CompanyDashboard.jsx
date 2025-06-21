@@ -1,9 +1,9 @@
-import CompanyHeader from "../../components/headers/CompanyHeader";
+import Header from '../../components/shared/Header';
 
 export default function CompanyDashboard() {
   return (
     <div>
-      <CompanyHeader />
+      <Header />
       <div className="p-4">Welcome to Company Dashboard!</div>
     </div>
   );

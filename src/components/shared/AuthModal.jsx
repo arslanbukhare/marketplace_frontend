@@ -1,46 +1,34 @@
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import LoginForm from './LoginForm';
-import SignupForm from './SignupForm';
-import OtpInput from './OtpInput';
+import LoginForm from '../shared/LoginForm';
+import SignupForm from '../shared/SignupForm';
+import OtpInput from '../shared/OtpInput';
+import { useAuth } from '../../context/AuthContext';
 
 export default function AuthModal({ isOpen, onClose }) {
   const [view, setView] = useState('login'); // 'login' | 'signup' | 'otp'
   const [loginMethod, setLoginMethod] = useState('email');
   const [loginValue, setLoginValue] = useState('');
+
+  useEffect(() => {
+  if (isOpen) {
+    setView('login');
+    setLoginMethod('email');
+    setLoginValue('');
+  }
+  }, [isOpen]);
+
   const navigate = useNavigate();
+  const { setUser } = useAuth();
+  const { login } = useAuth();
+
+
 
   if (!isOpen) return null;
 
-  
-  //   try {
-  //     const res = await axios.post(
-  //       'http://127.0.0.1:8000/api/login/request-otp',
-  //       { login, password },
-  //       { withCredentials: true }
-  //     );
-  //     setLoginValue(login);
-  //     setView('otp');
-  //     toast.success('OTP sent to your login.');
-  //   } catch (error) {
-  //     const status = error?.response?.status;
-  //     const data = error?.response?.data;
-
-  //     if (status === 403 && data?.unverified) {
-  //       toast.error('Your email is not verified. Please verify it before logging in.');
-  //     } else if (data?.message) {
-  //       toast.error(data.message);
-  //     } else {
-  //       toast.error('Something went wrong. Try again.');
-  //     }
-  //     console.error('Login error:', error);
-  //   }
-  // };
-
-
-const handleLoginSubmit = async ({ login, password }) => {
+ const handleLoginSubmit = async ({ login, password }) => {
   try {
     const res = await axios.post(
       'http://127.0.0.1:8000/api/login/request-otp',
@@ -52,38 +40,22 @@ const handleLoginSubmit = async ({ login, password }) => {
 
     setLoginValue(login);
     setView('otp');
-    toast.success('OTP sent to your login.');
-    return { status: 'ok' };
+    return { status: 'ok', message: 'OTP sent to your login.' };
   } catch (error) {
-    console.error('❌ Full Axios error object:', error);
-
-    if (error?.response) {
-      console.error('❌ Error status:', error.response.status);
-      console.error('❌ Error data:', error.response.data);
-      console.error('❌ Error headers:', error.response.headers);
-    } else if (error?.request) {
-      console.error('❌ Request made but no response received:', error.request);
-    } else {
-      console.error('❌ Error setting up the request:', error.message);
-    }
-
     const status = error?.response?.status;
     const data = error?.response?.data;
 
     if (status === 403 && data?.status === 'unverified') {
       toast.error(data.message || 'Your email is not verified. Please verify it before logging in.');
       return { status: 'unverified' };
-    } else if (data?.message) {
-      toast.error(data.message);
-    } else {
-      toast.error('Something went wrong. Try again.');
     }
+
+    // 🚨 Add this: allow resendOtp() to catch and handle error properly
+    throw error;
   }
 };
 
 
-
-  
   const handleSignupSubmit = async (formData) => {
     try {
       await axios.post('http://127.0.0.1:8000/api/register', formData, {
@@ -103,52 +75,38 @@ const handleLoginSubmit = async ({ login, password }) => {
   //       { login: loginValue, otp },
   //       { withCredentials: true }
   //     );
+
   //     toast.success('Login successful!');
-  //     const { user, token } = response.data;
+  //     const { user, token } = res.data;
 
   //     localStorage.setItem("user", JSON.stringify(user));
   //     localStorage.setItem("token", token);
 
-  //     // Redirect to dashboard based on role
-  //     if (user.role === "company") {
-  //       navigate("/dashboard/company");
-  //     } else if (user.role === "individual") {
-  //       navigate("/dashboard/individual");
-  //     }
-
-  //     onClose();
+  //     setUser(user); // ✅ This will make UI reactive now
+  //     onClose();     // ✅ Close the modal — no redirect!
   //   } catch (error) {
   //     toast.error(error.response?.data?.message || 'Invalid OTP. Try again.');
   //   }
   // };
 
   const handleOtpSubmit = async (otp) => {
-      try {
-        const res = await axios.post(
-          'http://127.0.0.1:8000/api/login/verify-otp',
-          { login: loginValue, otp },
-          { withCredentials: true }
-        );
+    try {
+      const res = await axios.post(
+        'http://127.0.0.1:8000/api/login/verify-otp',
+        { login: loginValue, otp },
+        { withCredentials: true }
+      );
 
-        toast.success('Login successful!');
-        const { user, token } = res.data; // ✅ fix here
+      toast.success('Login successful!');
+      
+      const { user, access_token } = res.data;
 
-        localStorage.setItem("user", JSON.stringify(user));
-        localStorage.setItem("token", token);
-
-        // Redirect to dashboard based on role
-        if (user.role === "company") {
-          navigate("/dashboard/company");
-        } else if (user.role === "individual") {
-          navigate("/dashboard/individual");
-        }
-
-        onClose(); // ✅ optional - can also be called before navigate()
-      } catch (error) {
-        toast.error(error.response?.data?.message || 'Invalid OTP. Try again.');
-      }
-    };
-
+      login(user, access_token); // ✅ Now the token will be set correctly
+      onClose();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Invalid OTP. Try again.');
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-base-300 bg-opacity-60 flex items-center justify-center z-50">
@@ -178,7 +136,11 @@ const handleLoginSubmit = async ({ login, password }) => {
         )}
 
         {view === 'otp' && (
-          <OtpInput login={loginValue} onSubmit={handleOtpSubmit} />
+          <OtpInput
+            login={loginValue}
+            onSubmit={handleOtpSubmit}
+            resendOtp={() => handleLoginSubmit({ login: loginValue })}
+          />
         )}
 
         <div className="mt-4 text-center">

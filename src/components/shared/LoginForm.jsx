@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 
@@ -13,25 +14,41 @@ export default function LoginForm({ loginMethod, setLoginMethod, onSubmit }) {
   const [showVerifyPopup, setShowVerifyPopup] = useState(false);
   const [resendStatus, setResendStatus] = useState('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMessage('');
-    setLoading(true);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setMessage('');
+  setLoading(true);
 
-    try {
-      const response = await onSubmit({ login, password });
+  try {
+    const response = await onSubmit({ login, password });
 
-      if (response?.status === 'unverified') {
-        setShowVerifyPopup(true);
-        setMessage('');
-        return;
-      }
-    } catch (error) {
-      setMessage(error.message || 'Login failed');
-    } finally {
-      setLoading(false);
+    if (response?.status === 'unverified') {
+      setShowVerifyPopup(true);
+      return;
     }
-  };
+
+  } catch (error) {
+    const statusCode = error?.response?.status;
+    const data = error?.response?.data;
+
+    // Show toast and optionally message for common errors
+    if (statusCode === 429 || data?.status === 'rate_limited') {
+      toast.error(data?.message || 'Too many attempts. Please try again later.');
+      setMessage(''); // Don't show ugly raw message inline
+    } else if (data?.message) {
+      toast.error(data.message);
+      setMessage(data.message);
+    } else {
+      toast.error('Unexpected error. Please try again.');
+      setMessage('');
+    }
+
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   const handleResendVerification = async () => {
     try {
@@ -46,7 +63,7 @@ export default function LoginForm({ loginMethod, setLoginMethod, onSubmit }) {
   };
 
   // Regex patterns
-  const phonePattern = '^(9715\\d{8}|05\\d{8})$'; // UAE format: 9715xxxxxxxx or 05xxxxxxxx
+  const phonePattern = '^(+9715\\d{8}|05\\d{8})$'; // UAE format: 9715xxxxxxxx or 05xxxxxxxx
 
   return (
     <>
@@ -65,12 +82,12 @@ export default function LoginForm({ loginMethod, setLoginMethod, onSubmit }) {
               placeholder={
                 loginMethod === 'email'
                   ? 'example@domain.com'
-                  : '05XXXXXXXX or 9715XXXXXXXX' // 👈 UAE format hint
+                  : '05XXXXXXXX or +9715XXXXXXXX' // 👈 UAE format hint
               }
               pattern={loginMethod === 'phone' ? phonePattern : undefined} // 👈 Validation pattern for phone
               title={
                 loginMethod === 'phone'
-                  ? 'Enter UAE number (05XXXXXXXX or 9715XXXXXXXX)'
+                  ? 'Enter UAE number (05XXXXXXXX or +9715XXXXXXXX)'
                   : ''
               }
             />

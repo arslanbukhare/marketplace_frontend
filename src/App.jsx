@@ -1,51 +1,28 @@
-import { Routes, Route } from "react-router-dom";
-import Header from "./components/Header";
-import Hero from "./components/Hero";
-import CategoriesList from './components/CategoriesList';
-import CTA from "./components/CTA";
-import Footer from "./components/Footer";
-import CompanyDashboard from "./pages/dashboard/CompanyDashboard";
-import IndividualDashboard from "./pages/dashboard/IndividualDashboard";
-import ProtectedRoute from "./components/ProtectedRoute";
-import { Toaster } from "react-hot-toast";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import MarketplaceHome from './pages/marketplace/Home';
+import DiscountsHome from './pages/discounts/Home';
+import ProfilePage from './pages/profile/ProfilePage';
+import ProtectedRoute from './components/shared/ProtectedRoute';
 
-// Home Page layout
-const Home = () => (
-  <>
-    <Header />
-    <main className="flex-grow">
-      <Hero />
-      <CategoriesList />
-      <CTA />
-    </main>
-    <Footer />
-  </>
+
+const App = () => (
+  <div data-theme="light">
+    <Toaster position="top-right" reverseOrder={false} />
+    
+    <Routes>
+      <Route path="/" element={<MarketplaceHome />} />
+      <Route path="/discounts" element={<DiscountsHome />} />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
+  </div>
 );
 
-export default function App() {
-  return (
-    <div className="min-h-screen flex flex-col" data-theme="light">
-      <Toaster position="top-right" reverseOrder={false} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route
-          path="/dashboard/company"
-          element={
-            <ProtectedRoute>
-              <CompanyDashboard />
-            </ProtectedRoute>
-            }
-            />
-            <Route
-            path="/dashboard/individual"
-            element={
-              <ProtectedRoute>
-                <IndividualDashboard />
-              </ProtectedRoute>
-            }
-          />
-    </Routes>
-
-    </div>
-  );
-}
+export default App;
