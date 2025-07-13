@@ -151,31 +151,31 @@ export default function Header() {
                                 <FaBullhorn /> Post New Ad
                                 </Link>
                             </li>
-                            <li>
+                            {/* <li>
                                 <Link to="/manage-ads" className="py-2 px-2 flex items-center gap-2 hover:bg-base-200 rounded">
                                 <FaBoxOpen /> Manage Ads
                                 </Link>
-                            </li>
-                            <li>
+                            </li> */}
+                            {/* <li>
                                 <Link to="/post-job" className="py-2 px-2 flex items-center gap-2 hover:bg-base-200 rounded">
                                 <FaBriefcase /> Post Job Offer
                                 </Link>
-                            </li>
-                            <li>
+                            </li> */}
+                            {/* <li>
                                 <Link to="/applicants" className="py-2 px-2 flex items-center gap-2 hover:bg-base-200 rounded">
                                 <FaUsers /> Manage Applications
                                 </Link>
-                            </li>
-                            <li>
+                            </li> */}
+                            {/* <li>
                                 <Link to="/company-profile" className="py-2 px-2 flex items-center gap-2 hover:bg-base-200 rounded">
                                 <FaBuilding /> Company Profile
                                 </Link>
-                            </li>
-                            <li>
+                            </li> */}
+                            {/* <li>
                                 <Link to="/billing" className="py-2 px-2 flex items-center gap-2 hover:bg-base-200 rounded">
                                 <FaMoneyCheckAlt /> Billing / Invoices
                                 </Link>
-                            </li>
+                            </li> */}
                             </>
                         )}
 
@@ -193,7 +193,9 @@ export default function Header() {
 
                 {/* ❌ Hide "Post Your Ad" on /discounts */}
                 {!isDiscounts && (
-                  <button className="btn btn-primary btn-sm text-base">Post Your Ad</button>
+                  <Link to="/post-ad" className="btn btn-primary btn-sm text-base">
+                            + Post New Ad
+                                </Link>
                 )}
               </>
             ) : (
